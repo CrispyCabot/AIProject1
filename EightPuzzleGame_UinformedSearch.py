@@ -80,7 +80,6 @@ class UninformedSearchSolver:
         ### ↑(move up) action ###
         #(row - 1) is checked to prevent out of bounds errors, the tile is swapped with the one above it
         if (row - 1) >= 0:
-            #TODO: These directions don't make sense so I'm ignoring them
             """
              *get the 2d array of current 
              *define a temp 2d array and loop over current.tile_seq
