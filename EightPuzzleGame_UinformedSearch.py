@@ -7,7 +7,7 @@ You may choose to implement the Breadth-first or Depth-first or Iterative-Deepen
 
 '''
 
-
+#Depth first search
 class UninformedSearchSolver:
     current = State()
     goal = State()
@@ -25,15 +25,20 @@ class UninformedSearchSolver:
         """
         * The check_inclusive function is designed to check if the expanded state is or is not in open list or closed list
         * This is done to prevent looping
-        * @param s
-        * @return
+        * @param State s
+        * @return a dictionoary with keys open and closed which map to true or false
         """
-        in_open = 0
-        in_closed = 0
+        in_open = False
+        in_closed = False
         ret = [-1, -1]
 
         #TODO your code start here
+        if s in self.openlist:
+            in_open = True
+        if s in self.closed:
+            in_closed = True
 
+        return {"open": in_open, "closed": in_closed}
 
 
 
@@ -75,6 +80,7 @@ class UninformedSearchSolver:
         ### ↑(move up) action ###
         #(row - 1) is checked to prevent out of bounds errors, the tile is swapped with the one above it
         if (row - 1) >= 0:
+            #TODO: These directions don't make sense so I'm ignoring them
             """
              *get the 2d array of current 
              *define a temp 2d array and loop over current.tile_seq
@@ -99,22 +105,52 @@ class UninformedSearchSolver:
              *add the child to open
              *end;
             """
-
+            temp = self.current.tile_seq.copy()
+            #Swap the blank space with the tile above it
+            temp[row][col] = temp[row-1][col]
+            temp[row-1][col] = 0
+            tempState = State(temp, self.depth)
+            flags = self.check_inclusive(tempState)
+            if not (flags["open"] or flags["closed"]):
+                self.openlist.append(tempState)
 
         ### ↓(move down) action ###
-
-
-
+        #row + 1 is checked to make sure it will stay in bounds
+        if (row + 1 < len(walk_state)):
+            temp = self.current.tile_seq.copy()
+            #Swap the blank space with the tile above it
+            temp[row][col] = temp[row+1][col]
+            temp[row+1][col] = 0
+            tempState = State(temp, self.depth)
+            flags = self.check_inclusive(tempState)
+            if not (flags["open"] or flags["closed"]):
+                self.openlist.append(tempState)
 
         ### ←(move left) action ###
-
+        if (col - 1 >= 0):
+            temp = self.current.tile_seq.copy()
+            #Swap the blank space with the tile above it
+            temp[row][col] = temp[row][col-1]
+            temp[row][col-1] = 0
+            tempState = State(temp, self.depth)
+            flags = self.check_inclusive(tempState)
+            if not (flags["open"] or flags["closed"]):
+                self.openlist.append(tempState)
 
 
         ### →(move right) action ###
-
+        if (col + 1 < len(walk_state)):
+            temp = self.current.tile_seq.copy()
+            #Swap the blank space with the tile above it
+            temp[row][col] = temp[row][col+1]
+            temp[row][col+1] = 0
+            tempState = State(temp, self.depth)
+            flags = self.check_inclusive(tempState)
+            if not (flags["open"] or flags["closed"]):
+                self.openlist.append(tempState)
 
         # Set the next current state
-
+        self.current = self.openlist[0]
         #TODO your code end here
 
 

@@ -26,6 +26,7 @@ class EightPuzzleGame:
         # initialize the init state and goal state as 2d array
         #init_tile = np.array([[2, 3, 6], [1, 4, 8], [7, 5, 0]])
         init_tile = np.array([[1, 2, 3], [0, 4, 6], [7, 5, 8]])
+        init_tile = np.array([[1, 2, 3], [0, 4, 6], [7, 5, 8]])
         init = State(init_tile, 0, 0)
         print("\nStart state:")
         init_str = np.array2string(init_tile, precision=2, separator=' ')
@@ -47,7 +48,6 @@ class EightPuzzleGame:
 
         #IS_solver = InformedSearchSolver(init, goal)
         #IS_solver.run()
-
 
 # start the puzzle game
 epp = EightPuzzleGame()
