@@ -46,6 +46,12 @@ class InformedSearchSolver:
         # the child is not in open or closed
         # the child is already in open
         # the child is already in closed
+        if s in self.openlist:
+            in_open = True
+        if s in self.closed:
+            in_closed = True
+
+        return {"open": in_open, "closed": in_closed}
 
 
         # TODO your code start here
@@ -106,19 +112,36 @@ class InformedSearchSolver:
              *add the child to open
              *end;
             """
-
+            temp = self.current.tile_seq.copy()
+            #Swap the blank space with the tile above it
+            temp[row][col] = temp[row-1][col]
+            temp[row-1][col] = 0
+            self.handleStateStuff(temp)
 
         ### ↓(move down) action ###
-
+        if row + 1 < len(walk_state):
+            temp = self.current.tile_seq.copy()
+            #Swap the blank space with the tile below it
+            temp[row][col] = temp[row+1][col]
+            temp[row+1][col] = 0
+            self.handleStateStuff(temp)
 
 
         ### ←(move left) action ###
-
-
-
+        if col - 1 > 0:
+            temp = self.current.tile_seq.copy()
+            #Swap the blank space with the tile left of it
+            temp[row][col] = temp[row][col-1]
+            temp[row][col-1] = 0
+            self.handleStateStuff(temp)
 
         ### →(move right) action ###
-
+        if col + 1 < len(walk_state):
+            temp = self.current.tile_seq.copy()
+            #Swap the blank space with the tile left of it
+            temp[row][col] = temp[row][col+1]
+            temp[row][col+1] = 0
+            self.handleStateStuff(temp)
 
 
         # sort the open list first by h(n) then g(n)
@@ -127,7 +150,30 @@ class InformedSearchSolver:
         #TODO your code end here
 
 
-
+    def handleStateStuff(self, temp):
+        tempState = State(temp, self.depth)
+        tempState.weight = self.heuristic_test(tempState)
+        flags = self.check_inclusive(tempState)
+        #Haven't seen this state yet, so just put it in open
+        if not (flags["open"] or flags["closed"]):
+            self.openlist.append(tempState)
+        #if this state already exists in open, make sure open has the shorter path
+        if flags["open"] and not flags["closed"]:
+            #get the existing state from open
+            index = self.openlist.index(tempState)
+            existingState = self.openlist[index]
+            #If new state has a shorter path, remove old state and replace it with this one
+            if tempState.depth < existingState.depth:
+                self.openlist.pop(index)
+                self.openlist.append(tempState)
+        #If this state was already closed but this one has a shorter path, open it back up
+        if flags["closed"] and not flags["open"]:
+            #get the existing state from open
+            index = self.closed.index(tempState)
+            existingState = self.closed[index]
+            #If new state has a shorter path, remove old state and replace it with this one
+            if tempState.depth < existingState.depth:
+                self.openlist.append(tempState)
 
     def heuristic_test(self, current):
         """
@@ -190,7 +236,7 @@ class InformedSearchSolver:
         """
 
         # update the heuristic value for current state
-
+        return 0
         #TODO your code end here
 
 
