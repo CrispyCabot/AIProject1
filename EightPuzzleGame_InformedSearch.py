@@ -37,18 +37,23 @@ class InformedSearchSolver:
          * @param s
          * @return
         """
-        in_open = 0
-        in_closed = 0
+        in_open = False
+        in_closed = False
         ret = [-1, -1]
 
-        # TODO your code start here
+        #TODO your code start here
+        for i in self.openlist:
+            if i.equals(s):
+                in_open = True
+                break
+        for i in self.closed:
+            if i.equals(s):
+                in_closed = True
+                break
 
-        # the child is not in open or closed
-        # the child is already in open
-        # the child is already in closed
+        return {"open": in_open, "closed": in_closed}
 
-
-        # TODO your code start here
+        # TODO your code end here
 
 
     def state_walk(self):
@@ -58,10 +63,9 @@ class InformedSearchSolver:
         *  ↑ ↓ ← → (move up, move down, move left, move right)
         * Note that in this framework the blank tile is represent by '0'
         """
-
-        # add closed state
         self.closed.append(self.current)
         self.openlist.remove(self.current)
+
         # move to the next heuristic state
         walk_state = self.current.tile_seq
         row = 0
@@ -76,11 +80,14 @@ class InformedSearchSolver:
 
         self.depth += 1
 
+        children = []
+
         ''' The following program is used to do the state space actions
          The 4 conditions for moving the tiles all use similar logic, they only differ in the location of the 
          tile that needs to be swapped. That being the case, I will only comment the first subroutine'''
         # TODO your code start here
         ### ↑(move up) action ###
+        #(row - 1) is checked to prevent out of bounds errors, the tile is swapped with the one above it
         if (row - 1) >= 0:
             """
              *get the 2d array of current 
@@ -106,23 +113,78 @@ class InformedSearchSolver:
              *add the child to open
              *end;
             """
-
+            temp = self.current.tile_seq.copy()
+            #Swap the blank space with the tile above it
+            temp[row][col] = temp[row-1][col]
+            temp[row-1][col] = 0
+            tempState = State(temp, self.depth)
+            children.append(tempState)
 
         ### ↓(move down) action ###
-
-
+        #row + 1 is checked to make sure it will stay in bounds
+        if (row + 1 < len(walk_state)):
+            temp = self.current.tile_seq.copy()
+            #Swap the blank space with the tile above it
+            temp[row][col] = temp[row+1][col]
+            temp[row+1][col] = 0
+            tempState = State(temp, self.depth)
+            children.append(tempState)
 
         ### ←(move left) action ###
-
-
+        if (col - 1 >= 0):
+            temp = self.current.tile_seq.copy()
+            #Swap the blank space with the tile above it
+            temp[row][col] = temp[row][col-1]
+            temp[row][col-1] = 0
+            tempState = State(temp, self.depth)
+            children.append(tempState)
 
 
         ### →(move right) action ###
+        if (col + 1 < len(walk_state)):
+            temp = self.current.tile_seq.copy()
+            #Swap the blank space with the tile above it
+            temp[row][col] = temp[row][col+1]
+            temp[row][col+1] = 0
+            tempState = State(temp, self.depth)
+            children.append(tempState)
+
+        for child in children:
+            flags = self.check_inclusive(child)
+            #TODO: child.weight = heuristic value
+            if not (flags['open'] or flags['closed']):
+                self.openlist.append(child)
+            elif flags['open']:
+                existingState = None
+                existingStateIndex = -1
+                for i in self.openlist:
+                    if i.equals(child):
+                        existingState = i
+                        existingStateIndex = self.openlist.index(i)
+                        break
+                if child.depth < existingState.depth:
+                    self.openlist[existingStateIndex] = child
+            elif flags['closed']:
+                existingState = None
+                existingStateIndex = -1
+                for i in self.closed:
+                    if i.equals(child):
+                        existingState = i
+                        existingStateIndex = self.closed.index(i)
+                        break
+                if child.depth < existingState.depth:
+                    self.closed.remove(existingState)
+                    self.openlist.append(child)
 
 
 
         # sort the open list first by h(n) then g(n)
+
+        #TODO: sort self.open by State.weight with lowest weight being on the left
+
         # Set the next current state
+
+        self.current = self.openlist[0]
 
         #TODO your code end here
 

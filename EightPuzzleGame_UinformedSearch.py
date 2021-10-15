@@ -36,9 +36,11 @@ class UninformedSearchSolver:
         for i in self.openlist:
             if i.equals(s):
                 in_open = True
+                break
         for i in self.closed:
             if i.equals(s):
                 in_closed = True
+                break
 
         return {"open": in_open, "closed": in_closed}
 
