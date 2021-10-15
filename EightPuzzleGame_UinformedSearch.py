@@ -49,7 +49,7 @@ class UninformedSearchSolver:
         #TODO your code end here
 
 
-
+    #Breadth first search
     def state_walk(self):
         """
         * The following state_walk function is designed to move the blank tile --> perform actions

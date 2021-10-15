@@ -29,7 +29,6 @@ class InformedSearchSolver:
     def sortFun(self, e):
         return e.weight
 
-
     def check_inclusive(self, s):
         """
          * The check_inclusive function is designed to check if the expanded state is in open list or closed list
@@ -151,7 +150,7 @@ class InformedSearchSolver:
 
         for child in children:
             flags = self.check_inclusive(child)
-            #TODO: child.weight = heuristic value
+            child.weight = self.heuristic_test(child)
             if not (flags['open'] or flags['closed']):
                 self.openlist.append(child)
             elif flags['open']:
@@ -180,7 +179,14 @@ class InformedSearchSolver:
 
         # sort the open list first by h(n) then g(n)
 
-        #TODO: sort self.open by State.weight with lowest weight being on the left
+        newList = []
+        for val in self.openlist:
+            index = 0
+          #  print(index)
+            while index < len(newList) and newList[index].weight < val.weight:
+                index += 1
+            newList.insert(index, val)
+        self.openlist = newList
 
         # Set the next current state
 
@@ -216,6 +222,13 @@ class InformedSearchSolver:
          *loop over the curr_seq
          *check the every entry in curr_seq with goal_seq
         """
+
+        dimens = len(curr_seq)
+
+        for row in range(0, dimens):
+            for col in range(0, dimens):
+                if curr_seq[row][col] != goal_seq[row][col]:
+                    h1 += 1
         #TODO your code end here
         
 
@@ -230,12 +243,20 @@ class InformedSearchSolver:
          *of curr_row-goal_row and curr_col-goal_col
          *absoulte value can be calculated by abs(...)
         """
+        for currRow in range(0, dimens):
+            for currCol in range(0, dimens):
+                val = curr_seq[currRow][currCol]
+                for goalRow in range(0, dimens):
+                    for goalCol in range(0, dimens):
+                        if goal_seq[goalRow][goalCol] == val:
+                            h2 += abs(currRow-goalRow) + abs(currCol-goalCol)
+                            break
         #TODO your code end here
         
         
         # (3) 2 x the number of direct tile reversals
         h3 = 0
-        #TODO your code start here
+        #TODO* your code start here
         """
          *loop over the curr_seq
          *use a Γ(gamma)shap slider to walk throught curr_seq and goal_seq
@@ -251,7 +272,11 @@ class InformedSearchSolver:
          *reversal is 1 2 and 2 1
         """
 
+
+
         # update the heuristic value for current state
+
+        return h1 + h2 + h3
 
         #TODO your code end here
 
@@ -270,11 +295,11 @@ class InformedSearchSolver:
         path = 0
         while not self.current.equals(self.goal):
             self.state_walk()
-            print('Visited State number ', path + 1)
+            path += 1
+            print('Visited State number', path)
             pathstate_str = np.array2string(self.current.tile_seq, precision=2, separator=' ')
             print(pathstate_str[1:-1])
-            path += 1
 
-        print("\nIt took ", path, " iterations to reach to the goal state")
-        print("The length of the path is: ", self.current.depth)
+        print("\nIt took", path, "iterations to reach to the goal state")
+        print("The length of the path is:", self.current.depth)
 

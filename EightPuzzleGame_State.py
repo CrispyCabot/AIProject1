@@ -23,5 +23,9 @@ class State:
         comparison = self.tile_seq == op
         return comparison.all()
 
-    # def __eq__(self, obj):
-    #     return self.equals(obj)
+    def __str__(self):
+        s = "\n"
+        s += np.array2string(self.tile_seq, precision = 2, separator=' ')
+        s += "\nDepth: " + str(self.depth)
+        s += "\nWeight: " + str(self.weight)
+        return s
