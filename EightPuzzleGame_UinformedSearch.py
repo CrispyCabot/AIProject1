@@ -33,10 +33,12 @@ class UninformedSearchSolver:
         ret = [-1, -1]
 
         #TODO your code start here
-        if s in self.openlist:
-            in_open = True
-        if s in self.closed:
-            in_closed = True
+        for i in self.openlist:
+            if i.equals(s):
+                in_open = True
+        for i in self.closed:
+            if i.equals(s):
+                in_closed = True
 
         return {"open": in_open, "closed": in_closed}
 
@@ -67,7 +69,6 @@ class UninformedSearchSolver:
                 if walk_state[i, j] == 0:
                     row = i
                     col = j
-                    break
 
         self.depth += 1
 
@@ -161,14 +162,13 @@ class UninformedSearchSolver:
         target_str = np.array2string(target, precision=2, separator=' ')
         print(target_str[1:-1])
 
-        print("\n The visited states are: ")
+        print("\nThe visited states are: ")
         path = 0
         while not self.current.equals(self.goal):
             self.state_walk()
-            print('Visited State number ', path+1)
+            path += 1
+            print('Visited State number:', path)
             pathstate_str = np.array2string(self.current.tile_seq, precision=2, separator=' ')
             print(pathstate_str[1:-1])
-            path += 1
-        print("\n It took ", path, " iterations to reach to the goal state")
+        print("\nIt took ", path, " iterations to reach to the goal state")
         print("The length of the path is: ", self.current.depth)
-

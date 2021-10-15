@@ -18,8 +18,10 @@ class State:
                 index += 1
         return tiles
 
-
     def equals(self, obj):
         op = obj.tile_seq
         comparison = self.tile_seq == op
         return comparison.all()
+
+    # def __eq__(self, obj):
+    #     return self.equals(obj)
