@@ -149,7 +149,7 @@ class InformedSearchSolver:
 
         for child in children:
             flags = self.check_inclusive(child)
-            child.weight = self.heuristic_test(child)
+            child.weight = child.depth + self.heuristic_test(child)
             if not (flags['open'] or flags['closed']):
                 self.openlist.append(child)
             elif flags['open']:
