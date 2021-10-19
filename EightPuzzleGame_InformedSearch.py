@@ -14,6 +14,7 @@ Evaluation function is used to express the quality of informedness of a heuristi
 
 '''
 
+
 class InformedSearchSolver:
     current = State()
     goal = State()
@@ -40,7 +41,7 @@ class InformedSearchSolver:
         in_closed = False
         ret = [-1, -1]
 
-        #TODO your code start here
+        # TODO your code start here
         for i in self.openlist:
             if i.equals(s):
                 in_open = True
@@ -53,7 +54,6 @@ class InformedSearchSolver:
         return {"open": in_open, "closed": in_closed}
 
         # TODO your code end here
-
 
     def state_walk(self):
         """
@@ -86,7 +86,7 @@ class InformedSearchSolver:
          tile that needs to be swapped. That being the case, I will only comment the first subroutine'''
         # TODO your code start here
         ### ↑(move up) action ###
-        #(row - 1) is checked to prevent out of bounds errors, the tile is swapped with the one above it
+        # (row - 1) is checked to prevent out of bounds errors, the tile is swapped with the one above it
         if (row - 1) >= 0:
             """
              *get the 2d array of current 
@@ -113,17 +113,17 @@ class InformedSearchSolver:
              *end;
             """
             temp = self.current.tile_seq.copy()
-            #Swap the blank space with the tile above it
+            # Swap the blank space with the tile above it
             temp[row][col] = temp[row-1][col]
             temp[row-1][col] = 0
             tempState = State(temp, self.depth)
             children.append(tempState)
 
         ### ↓(move down) action ###
-        #row + 1 is checked to make sure it will stay in bounds
+        # row + 1 is checked to make sure it will stay in bounds
         if (row + 1 < len(walk_state)):
             temp = self.current.tile_seq.copy()
-            #Swap the blank space with the tile above it
+            # Swap the blank space with the tile above it
             temp[row][col] = temp[row+1][col]
             temp[row+1][col] = 0
             tempState = State(temp, self.depth)
@@ -132,17 +132,16 @@ class InformedSearchSolver:
         ### ←(move left) action ###
         if (col - 1 >= 0):
             temp = self.current.tile_seq.copy()
-            #Swap the blank space with the tile above it
+            # Swap the blank space with the tile above it
             temp[row][col] = temp[row][col-1]
             temp[row][col-1] = 0
             tempState = State(temp, self.depth)
             children.append(tempState)
 
-
         ### →(move right) action ###
         if (col + 1 < len(walk_state)):
             temp = self.current.tile_seq.copy()
-            #Swap the blank space with the tile above it
+            # Swap the blank space with the tile above it
             temp[row][col] = temp[row][col+1]
             temp[row][col+1] = 0
             tempState = State(temp, self.depth)
@@ -175,8 +174,6 @@ class InformedSearchSolver:
                     self.closed.remove(existingState)
                     self.openlist.append(child)
 
-
-
         # sort the open list first by h(n) then g(n)
 
         newList = []
@@ -192,10 +189,7 @@ class InformedSearchSolver:
 
         self.current = self.openlist[0]
 
-        #TODO your code end here
-
-
-
+        # TODO your code end here
 
     def heuristic_test(self, current):
         """
@@ -217,7 +211,7 @@ class InformedSearchSolver:
 
         # (1) Tiles out of place
         h1 = 0
-        #TODO your code start here
+        # TODO your code start here
         """
          *loop over the curr_seq
          *check the every entry in curr_seq with goal_seq
@@ -229,12 +223,11 @@ class InformedSearchSolver:
             for col in range(0, dimens):
                 if curr_seq[row][col] != goal_seq[row][col]:
                     h1 += 1
-        #TODO your code end here
-        
+        # TODO your code end here
 
         # (2) Sum of distances out of place
         h2 = 0
-        #TODO your code start here
+        # TODO your code start here
         """
          *loop over the goal_seq and curr_seq in nested way
          *locate the entry which has the same value in 
@@ -251,12 +244,11 @@ class InformedSearchSolver:
                         if goal_seq[goalRow][goalCol] == val:
                             h2 += abs(currRow-goalRow) + abs(currCol-goalCol)
                             break
-        #TODO your code end here
-        
-        
+        # TODO your code end here
+
         # (3) 2 x the number of direct tile reversals
         h3 = 0
-        #TODO* your code start here
+        # TODO your code start here
         """
          *loop over the curr_seq
          *use a Γ(gamma)shap slider to walk throught curr_seq and goal_seq
@@ -271,19 +263,32 @@ class InformedSearchSolver:
          *    4             4
          *reversal is 1 2 and 2 1
         """
+        for row in range(0, dimens):
+            for col in range(0, dimens):
+                currElement = goal_seq[row][col]
+                # check right
+                if col + 1 < dimens and curr_seq[row][col+1] == goal_seq[row][col] and curr_seq[row][col] == goal_seq[row][col+1]:
+                    h3 += 1
+                # check left
+                if col - 1 >= 0 and curr_seq[row][col-1] == goal_seq[row][col] and curr_seq[row][col] == goal_seq[row][col-1]:
+                    h3 += 1
+                # check down
+                if row + 1 < dimens and curr_seq[row+1][col] == goal_seq[row][col] and curr_seq[row][col] == goal_seq[row+1][col]:
+                    h3 += 1
+                # check up
+                if row - 1 >= 0 and curr_seq[row-1][col] == goal_seq[row][col] and curr_seq[row][col] == goal_seq[row-1][col]:
+                    h3 += 1
 
-
+        h3 *= 2
 
         # update the heuristic value for current state
 
         return h1 + h2 + h3
 
-        #TODO your code end here
-
-
-
+        # TODO your code end here
 
     # You can change the following code to print all the states on the search path
+
     def run(self):
         # output the goal state
         target = self.goal.tile_seq
@@ -297,9 +302,9 @@ class InformedSearchSolver:
             self.state_walk()
             path += 1
             print('Visited State number', path)
-            pathstate_str = np.array2string(self.current.tile_seq, precision=2, separator=' ')
+            pathstate_str = np.array2string(
+                self.current.tile_seq, precision=2, separator=' ')
             print(pathstate_str[1:-1])
 
         print("\nIt took", path, "iterations to reach to the goal state")
         print("The length of the path is:", self.current.depth)
-
