@@ -265,21 +265,23 @@ class InformedSearchSolver:
         """
         for row in range(0, dimens):
             for col in range(0, dimens):
-                currElement = goal_seq[row][col]
-                # check right
-                if col + 1 < dimens and curr_seq[row][col+1] == goal_seq[row][col] and curr_seq[row][col] == goal_seq[row][col+1]:
-                    h3 += 1
-                # check left
-                if col - 1 >= 0 and curr_seq[row][col-1] == goal_seq[row][col] and curr_seq[row][col] == goal_seq[row][col-1]:
-                    h3 += 1
-                # check down
-                if row + 1 < dimens and curr_seq[row+1][col] == goal_seq[row][col] and curr_seq[row][col] == goal_seq[row+1][col]:
-                    h3 += 1
-                # check up
-                if row - 1 >= 0 and curr_seq[row-1][col] == goal_seq[row][col] and curr_seq[row][col] == goal_seq[row-1][col]:
-                    h3 += 1
+                if not (goal_seq[row][col] == 0 or curr_seq[row][col] == 0):
+                    # check right
+                    if col + 1 < dimens and curr_seq[row][col+1] == goal_seq[row][col] and curr_seq[row][col] == goal_seq[row][col+1]:
+                        h3 += 1
+                    # check left
+                    if col - 1 >= 0 and curr_seq[row][col-1] == goal_seq[row][col] and curr_seq[row][col] == goal_seq[row][col-1]:
+                        h3 += 1
+                    # check down
+                    if row + 1 < dimens and curr_seq[row+1][col] == goal_seq[row][col] and curr_seq[row][col] == goal_seq[row+1][col]:
+                        h3 += 1
+                    # check up
+                    if row - 1 >= 0 and curr_seq[row-1][col] == goal_seq[row][col] and curr_seq[row][col] == goal_seq[row-1][col]:
+                        h3 += 1
 
         h3 *= 2
+
+        
 
         # update the heuristic value for current state
 
